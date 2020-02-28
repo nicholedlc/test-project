@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= title %></title>
+</head>
+<body>
+  <main>
+    <div>
+      <% containers.forEach(c => { %>
+        <dl>
+          <dt>ID:</dt><dd><%= c.Id %></dd>
+          <dt>Name:</dt><dd><%= c.Names %></dd>
+          <dt>Image:</dt><dd><%= c.Image %></dd>
+          <dt>State:</dt><dd><%= c.State %></dd>
+          <dt>Status:</dt><dd><%= c.Status %></dd>
+        </dl>
+      <% }) %>
+    </div>
+  </main>
+</body>
+</html>

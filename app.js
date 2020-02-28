@@ -1,7 +1,17 @@
 const express = require('express');
+const Docker = require('dockerode');
+
 const app = express();
-const port = 3000;
+const PORT = 3000;
 
-app.get('/', (req, res) => res.send('Hello World!'));
+const docker = new Docker()
 
-app.listen(port, () => console.log(`📡 Server is listening on port ${port}!`));
+app.set('view engine', 'ejs');
+
+app.get('/', async (req, res) => {
+  const containers = await docker.listContainers()
+  console.log(containers)
+  res.render('index', { title: 'Docker Containers', containers })
+})
+
+app.listen(PORT, () => console.log(`📡 Server is listening on port ${PORT}!`));
