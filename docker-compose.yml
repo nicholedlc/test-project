@@ -1,0 +1,13 @@
+version: "3.7"
+
+services:
+  test-project:
+    build:
+      context: .
+    ports:
+      - 4040:4040
+    volumes:
+      - type: bind
+        source: /var/run/docker.sock
+        target: /var/run/docker.sock
+        read_only: true
