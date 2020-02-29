@@ -7,6 +7,25 @@
   <title><%= title %></title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <style>
+    .inner-card {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+    }
+
+    p.title.slot-number {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .task-info {
+      margin-bottom: 15px;
+    }
+  </style>
 </head>
 
 <body>
@@ -58,6 +77,91 @@
             </tr>
             <% }) %>
           </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="hero is-light">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            Docker Swarm Services
+            &nbsp
+            <i class="fab fa-docker"></i>
+          </h1>
+          <h2 class="subtitle">
+            Test Project Phase 1
+          </h2>
+          <div class="section">
+            <% swarm.forEach(s => { %>
+            <div class="card">
+              <header class="card-header">
+                <h2 class="card-header-title">
+                  <%= s.name %>
+                </h2>
+                <span>
+                  <div class="card-header-icon" aria-label="more options">
+                    <span class="has-text-grey">Service ID</span>
+                    &nbsp;&nbsp;
+                    <span class="has-text-dark"><%= s.id %></span>
+                  </div>
+                </span>
+              </header>
+
+              <div class="card-content inner-card has-background-grey-lighter">
+                <% s.tasks.forEach(t => { %>
+                <div class="card">
+                  <div class="card-content">
+                    <div class="task-info">
+                      <p class="title slot-number has-text-info">
+                        <%= t.slot %>
+                      </p>
+                      <p>
+                        <span class="has-text-grey">Task ID</span>
+                        &nbsp;
+                        <span class="has-text-dark"><%= t.id %></span>
+                      </p>
+                      <p>
+                        <span class="has-text-grey">Node ID</span>
+                        &nbsp;
+                        <span class="has-text-dark"><%= t.nodeId %></span>
+                      </p>
+                    </div>
+                    <article class="message is-info">
+                      <div class="message-header">
+                        <p>Container Status</p>
+                      </div>
+                      <div class="message-body">
+                        <p>
+                          <span class="has-text-grey">State</span>
+                          &nbsp;
+                          <span class="tag is-success is-light">
+                            <i class="fas fa-check"></i>
+                            &nbsp
+                            <%= t.container.State %>
+                          </span>
+                        </p>
+                        <p>
+                          <span class="has-text-grey">ID</span>
+                          &nbsp;
+                          <span class="has-text-dark"><%= t.container.ContainerStatus.ContainerID.slice(0, 12) %></span>
+                        </p>
+                        <p>
+                          <span class="has-text-grey">PID</span>
+                          &nbsp;
+                          <span class="has-text-dark"><%= t.container.ContainerStatus.PID %></span>
+                        </p>
+                      </div>
+                    </article>
+                  </div>
+                </div>
+                <% }) %>
+              </div>
+            </div>
+            </br>
+            <% }) %>
+          </div>
+        </div>
       </div>
     </section>
   </main>
