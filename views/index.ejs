@@ -1,23 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><%= title %></title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
+
 <body>
   <main>
-    <div>
-      <% containers.forEach(c => { %>
-        <dl>
-          <dt>ID:</dt><dd><%= c.Id %></dd>
-          <dt>Name:</dt><dd><%= c.Names %></dd>
-          <dt>Image:</dt><dd><%= c.Image %></dd>
-          <dt>State:</dt><dd><%= c.State %></dd>
-          <dt>Status:</dt><dd><%= c.Status %></dd>
-        </dl>
-      <% }) %>
-    </div>
+    <section class="hero is-info">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            Docker Containers
+            &nbsp
+            <i class="fab fa-docker"></i>
+          </h1>
+          <h2 class="subtitle">
+            Test Project Phase 1
+          </h2>
+        </div>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <table class="table is-hoverable is-fullwidth">
+          <thead>
+            <tr>
+              <th>Id</th>
+              <th>Name</th>
+              <th>Image</th>
+              <th>State</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% runningContainers.forEach(c => { %>
+            <tr>
+              <td>
+                <abbr title=<%= c.Id %>>
+                  <%= c.Id.slice(0, 12) %>
+                </abbr>
+              </td>
+              <td><%= c.Names %></td>
+              <td><%= c.Image %></td>
+              <td>
+                <span class="tag is-success is-light">
+                  <i class="fas fa-check"></i>
+                  &nbsp
+                  <%= c.State %>
+                </span>
+              </td>
+              <td><%= c.Status %></td>
+            </tr>
+            <% }) %>
+          </tbody>
+      </div>
+    </section>
   </main>
 </body>
+
 </html>

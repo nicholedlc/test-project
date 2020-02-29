@@ -11,7 +11,8 @@ app.set('view engine', 'ejs');
 app.get('/', async (req, res) => {
   try {
     const containers = await docker.listContainers()
-    res.render('index', { title: 'Docker Containers', containers })
+    const runningContainers = containers.filter(c => c.State === 'running')
+    res.render('index', { title: 'Docker Containers', runningContainers });
   } catch (err) {
     console.error(err)
   }
