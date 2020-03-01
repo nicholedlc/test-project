@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><%= title %></title>
+  <title>Test Project</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
   <style>
@@ -13,6 +13,12 @@
       flex-direction: row;
       justify-content: flex-start;
       flex-wrap: wrap;
+
+      padding: 0.75rem;
+    }
+
+    .inner-card > .card {
+      margin: 0.75rem;
     }
 
     p.title.slot-number {
@@ -24,6 +30,13 @@
 
     .task-info {
       margin-bottom: 15px;
+    }
+
+    .trunc-long {
+      max-width: 500px;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto;
     }
   </style>
 </head>
@@ -49,11 +62,12 @@
         <table class="table is-hoverable is-fullwidth">
           <thead>
             <tr>
-              <th>Id</th>
-              <th>Name</th>
+              <th>ID</th>
+              <th>Names</th>
               <th>Image</th>
               <th>State</th>
               <th>Status</th>
+              <th>Ports</th>
             </tr>
           </thead>
           <tbody>
@@ -64,8 +78,13 @@
                   <%= c.Id.slice(0, 12) %>
                 </abbr>
               </td>
-              <td><%= c.Names %></td>
-              <td><%= c.Image %></td>
+              <td>
+                <% c.Names.map(name => { %>
+                  <span><%= name %></span>
+                  <br>
+                <% }) %>
+              </td>
+              <td class="trunc-long"><%= c.Image %></td>
               <td>
                 <span class="tag is-success is-light">
                   <i class="fas fa-check"></i>
@@ -74,6 +93,12 @@
                 </span>
               </td>
               <td><%= c.Status %></td>
+              <td>
+                <% c.Ports.map(port => { %>
+                  <span><%= port %></span>
+                  <br>
+                <% }) %>
+              </td>
             </tr>
             <% }) %>
           </tbody>
@@ -81,19 +106,20 @@
       </div>
     </section>
 
+    <% if (swarmInfo) { %>
     <section class="hero is-light">
       <div class="hero-body">
         <div class="container">
           <h1 class="title">
-            Docker Swarm Services
+            Docker Swarm
             &nbsp
             <i class="fab fa-docker"></i>
           </h1>
           <h2 class="subtitle">
-            Test Project Phase 1
+            Services, Tasks & Containers
           </h2>
           <div class="section">
-            <% swarm.forEach(s => { %>
+            <% swarmInfo.forEach(s => { %>
             <div class="card">
               <header class="card-header">
                 <h2 class="card-header-title">
@@ -144,12 +170,16 @@
                         <p>
                           <span class="has-text-grey">ID</span>
                           &nbsp;
-                          <span class="has-text-dark"><%= t.container.ContainerStatus.ContainerID.slice(0, 12) %></span>
+                          <span class="has-text-dark">
+                            <%= t.container.ContainerStatus.ContainerID.slice(0, 12) %>
+                          </span>
                         </p>
                         <p>
                           <span class="has-text-grey">PID</span>
                           &nbsp;
-                          <span class="has-text-dark"><%= t.container.ContainerStatus.PID %></span>
+                          <span class="has-text-dark">
+                            <%= t.container.ContainerStatus.PID %>
+                          </span>
                         </p>
                       </div>
                     </article>
@@ -164,6 +194,7 @@
         </div>
       </div>
     </section>
+  <% } %>
   </main>
 </body>
 
