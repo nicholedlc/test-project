@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Test Project</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <style>
+    .inner-card {
+      display: flex;
+      flex-direction: row;
+      justify-content: flex-start;
+      flex-wrap: wrap;
+
+      padding: 0.75rem;
+    }
+
+    .inner-card>.card {
+      margin: 0.75rem;
+    }
+
+    p.title.slot-number {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .task-info {
+      margin-bottom: 15px;
+    }
+
+    .trunc-long {
+      max-width: 500px;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: auto;
+    }
+  </style>
+</head>
+
+<body>
+  <main>
+    <section class="hero is-dark">
+      <div class="hero-body">
+        <div class="container">
+          <h1 class="title">
+            Sumo Logic Collector Docker
+            &nbsp
+            <i class="fab fa-docker"></i>
+          </h1>
+          <h2 class="subtitle">
+            Test Project Phase 2
+          </h2>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <form action="/creds" method="POST">
+        <div class="field">
+          <label class="label">Sumo Logic Access ID</label>
+          <p class="control has-icons-left has-icons-right">
+            <input class="input" type="text" name="sumoAccessId">
+            <span class="icon is-small is-left">
+              <i class="fas fa-tag"></i>
+            </span>
+            <!-- <span class="icon is-small is-right">
+              <i class="fas fa-check"></i>
+            </span> -->
+          </p>
+        </div>
+        <div class="field">
+          <label class="label">Sumo Logic Access Key</label>
+          <p class="control has-icons-left">
+            <input class="input" type="password" name="sumoAccessKey">
+            <span class="icon is-small is-left">
+              <i class="fas fa-key"></i>
+            </span>
+          </p>
+        </div>
+        <div class="field">
+          <p class="control">
+            <button class="button is-success">
+              Login
+            </button>
+          </p>
+        </div>
+      </form>
+    </section>
+  </main>
+</body>
+
+</html>

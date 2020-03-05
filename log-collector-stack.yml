@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  sumologic:
+    image: sumologic/collector:latest
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    deploy:
+      mode: global
+    secrets:
+      - sumo-access-id
+      - sumo-access-key
+    environment:
+      SUMO_ACCESS_ID_FILE: /run/secrets/sumo-access-id
+      SUMO_ACCESS_KEY_FILE: /run/secrets/sumo-access-key
+
+secrets:
+  sumo-access-id:
+    external: true
+  sumo-access-key:
+    external: true
