@@ -16,7 +16,6 @@ app.set('view engine', 'ejs');
 app.use(express.urlencoded({ extended: true }))
 
 app.get('/', async (req, res) => {
-  console.log(`🦍 DON'T BE BAD!`)
   try {
     const containers = await docker.listContainers();
     const runningContainers = utils.transformContainerList(containers);
@@ -37,33 +36,18 @@ app.get('/', async (req, res) => {
   }
 });
 
-app.get('/creds', async (req, res) => {
+
+
+app.get('/services/new', async (req, res) => {
   const services = await docker.listServices();
-  const serviceForDeletion = services.find(svc => svc.Spec.Name === LOG_COLLECTOR);
-  if (serviceForDeletion) {
-    const logCollectorService = await docker.getService(LOG_COLLECTOR)
-    await logCollectorService.remove();
-  }
-
-  const secretList = await docker.listSecrets();
-  const secretsForDeletion = secretList.filter(s =>
-    [SUMO_ACCESS_ID, SUMO_ACCESS_KEY].includes(s.Spec.Name)
-  );
-  await Promise.all(
-    secretsForDeletion.map(s => {
-      const secret = docker.getSecret(s.ID);
-      return secret.remove();
-    })
-  );
-
-  res.render('creds')
+  const logCollectorService = services.find(svc => svc.Spec.Name === LOG_COLLECTOR);
+  res.render('services/new', { isFormDisabled: !!logCollectorService })
 })
 
-app.post('/creds', async (req, res) => {
+app.post('/services', async (req, res) => {
   const { body } = req;
   // TODO: handle when there's already a service running
   // TODO: handle error and success, refactor!
-  // TODO: be able to spin up a new task and container when the service is empty
 
   try {
     const sumoAccessId = await docker.createSecret({
@@ -167,5 +151,26 @@ app.post('/creds', async (req, res) => {
     console.error(err)
   }
 })
+
+app.delete('/services/:name', async (req, res) => {
+  const serviceName = req.params.name
+
+  const logCollectorService = await docker.getService(serviceName);
+  await logCollectorService.remove();
+
+  const secretList = await docker.listSecrets();
+  const secretsForDeletion = secretList.filter(s =>
+    [SUMO_ACCESS_ID, SUMO_ACCESS_KEY].includes(s.Spec.Name)
+  );
+
+  await Promise.all(
+    secretsForDeletion.map(s => {
+      const secret = docker.getSecret(s.ID);
+      return secret.remove();
+    })
+  );
+
+  res.json(req.params);
+});
 
 app.listen(port, () => console.log(`📡 Server is listening on port ${port}!`));

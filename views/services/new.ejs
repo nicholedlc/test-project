@@ -38,6 +38,11 @@
       word-wrap: break-word;
       hyphens: auto;
     }
+
+    .form-stylez {
+      max-width: 70%;
+      margin: 0 auto;
+    }
   </style>
 </head>
 
@@ -59,32 +64,36 @@
     </section>
 
     <section class="section">
-      <form action="/creds" method="POST">
+      <form action="/services" method="POST" class="form-stylez">
         <div class="field">
           <label class="label">Sumo Logic Access ID</label>
           <p class="control has-icons-left has-icons-right">
-            <input class="input" type="text" name="sumoAccessId">
+            <input class="input" type="text" name="sumoAccessId" <%= isFormDisabled ? 'disabled' : '' %>>
             <span class="icon is-small is-left">
               <i class="fas fa-tag"></i>
             </span>
-            <!-- <span class="icon is-small is-right">
-              <i class="fas fa-check"></i>
-            </span> -->
           </p>
         </div>
         <div class="field">
           <label class="label">Sumo Logic Access Key</label>
           <p class="control has-icons-left">
-            <input class="input" type="password" name="sumoAccessKey">
+            <input class="input" type="password" name="sumoAccessKey" <%= isFormDisabled ? 'disabled' : '' %>>
             <span class="icon is-small is-left">
               <i class="fas fa-key"></i>
             </span>
           </p>
         </div>
+        <br>
         <div class="field">
           <p class="control">
-            <button class="button is-success">
-              Login
+            <a href="/">
+              <button type="button" class="button is-danger is-light">
+                <i class="fa fa-chevron-left"></i>&nbsp;&nbsp;Back
+              </button>
+            </a>
+
+            <button type="submit" class="button is-success" <%= isFormDisabled ? 'disabled' : '' %>>
+              Create
             </button>
           </p>
         </div>

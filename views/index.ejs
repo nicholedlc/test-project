@@ -111,12 +111,12 @@
       <div class="hero-body">
         <div class="container">
           <h1 class="title">
-            Docker Swarm
+            Docker Services
             &nbsp
             <i class="fab fa-docker"></i>
           </h1>
           <h2 class="subtitle">
-            Services, Tasks & Containers
+            Test Project Phase 1
           </h2>
           <div class="section">
             <% swarmInfo.forEach(s => { %>
@@ -127,12 +127,21 @@
                 </h2>
                 <span>
                   <div class="card-header-icon" aria-label="more options">
-                    <% if (s.name === 'log-collector') { %>
-                    <a href="/creds" onclick="return confirm('Are you sure you want to delete this service?');">
-                      <button class="button is-small is-danger">
+                    <% if (s.name === LOG_COLLECTOR) { %>
+                      <script>
+                        async function deleteService() {
+                          console.log("Deleting service...")
+                          if (confirm('Are you sure you want to delete this service?')) {
+                            await fetch("/services/<%= s.name %>", { method: "delete" })
+                            window.location.reload()
+                          }
+                        }
+                      </script>
+                      <button
+                        class="button is-small is-danger"
+                        onclick="deleteService()">
                         Remove
                       </button>
-                    </a>
                     &nbsp;&nbsp;
                     <% } %>
                     <span class="has-text-grey">Service ID</span>
@@ -200,8 +209,8 @@
             <% }) %>
           </div>
 
-          <% if (!swarmInfo.find(s => s.name === 'log-collector')) { %>
-          <a href="/creds">
+          <% if (!swarmInfo.find(s => s.name === LOG_COLLECTOR) && swarmInfo.find(s => /test-project/.test(s.name))) { %>
+          <a href="/services/new">
             <button class="button is-success">Create log collector service</button>
           </a>
           <% } %>
