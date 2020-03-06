@@ -4,6 +4,7 @@ services:
   test-project:
     build:
       context: .
+      dockerfile: app.Dockerfile
     ports:
       - 4040:4040
     volumes:

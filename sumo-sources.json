@@ -1,0 +1,13 @@
+{
+  "api.version": "v1",
+  "sources": [
+    {
+      "sourceType": "DockerLog",
+      "name": "LogCollector",
+      "uri": "unix:///var/run/docker.sock",
+      "specifiedContainers": ["*test-project*"],
+      "allContainers": false,
+      "collectEvents": true
+    }
+  ]
+}

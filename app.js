@@ -1,6 +1,8 @@
 const express = require('express');
 const Docker = require('dockerode');
 const utils = require('./utils');
+const morgan = require('morgan');
+
 
 const app = express();
 const port = process.env.DOCK_PORT || 4040;
@@ -14,6 +16,8 @@ const docker = new Docker();
 app.set('view engine', 'ejs');
 
 app.use(express.urlencoded({ extended: true }))
+app.use(morgan('dev'));
+
 
 app.get('/', async (req, res) => {
   try {
@@ -30,7 +34,11 @@ app.get('/', async (req, res) => {
     const tasks = await docker.listTasks();
     const swarmInfo = utils.transformSwarmInfo(services, tasks)
 
-    res.render('index', { runningContainers, swarmInfo });
+    res.render('index', {
+      runningContainers,
+      swarmInfo,
+      LOG_COLLECTOR,
+    });
   } catch (err) {
     console.error(err);
   }
@@ -41,14 +49,14 @@ app.get('/', async (req, res) => {
 app.get('/services/new', async (req, res) => {
   const services = await docker.listServices();
   const logCollectorService = services.find(svc => svc.Spec.Name === LOG_COLLECTOR);
-  res.render('services/new', { isFormDisabled: !!logCollectorService })
+
+  res.render('services/new', {
+    isFormDisabled: !!logCollectorService,
+  });
 })
 
 app.post('/services', async (req, res) => {
   const { body } = req;
-  // TODO: handle when there's already a service running
-  // TODO: handle error and success, refactor!
-
   try {
     const sumoAccessId = await docker.createSecret({
       Name: SUMO_ACCESS_ID,
@@ -68,7 +76,7 @@ app.post('/services', async (req, res) => {
       },
       TaskTemplate: {
         ContainerSpec: {
-          Image: 'sumologic/collector:latest',
+          Image: 'nicholedlc/sumo-collector',
           Env: [
             'SUMO_ACCESS_ID_FILE=/run/secrets/sumo-access-id',
             'SUMO_ACCESS_KEY_FILE=/run/secrets/sumo-access-key',
