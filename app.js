@@ -3,36 +3,42 @@ const Docker = require('dockerode');
 const utils = require('./utils');
 const morgan = require('morgan');
 
-
 const app = express();
 const port = process.env.DOCK_PORT || 4040;
-
 const SUMO_ACCESS_ID = 'sumo-access-id';
 const SUMO_ACCESS_KEY = 'sumo-access-key';
 const LOG_COLLECTOR = 'log-collector';
-
 const docker = new Docker();
 
 app.set('view engine', 'ejs');
 
-app.use(express.urlencoded({ extended: true }))
-app.use(morgan('dev'));
-
+app.use(express.urlencoded({ extended: true }));
+app.use(
+  morgan((tokens, req, res) =>
+    JSON.stringify({
+      method: tokens.method(req, res),
+      url: tokens.url(req, res),
+      status: tokens.status(req, res),
+      contentLength: tokens.res(req, res, 'content-length'),
+      responseTime: tokens['response-time'](req, res) + 'ms',
+    })
+  )
+);
 
 app.get('/', async (req, res) => {
   try {
     const containers = await docker.listContainers();
     const runningContainers = utils.transformContainerList(containers);
-
     const { Swarm } = await docker.info();
+
     if (Swarm.LocalNodeState === 'inactive') {
       res.render('index', { runningContainers, swarmInfo: null });
-      return
+      return;
     }
 
     const services = await docker.listServices();
     const tasks = await docker.listTasks();
-    const swarmInfo = utils.transformSwarmInfo(services, tasks)
+    const swarmInfo = utils.transformSwarmInfo(services, tasks);
 
     res.render('index', {
       runningContainers,
@@ -44,23 +50,23 @@ app.get('/', async (req, res) => {
   }
 });
 
-
-
 app.get('/services/new', async (req, res) => {
   const services = await docker.listServices();
-  const logCollectorService = services.find(svc => svc.Spec.Name === LOG_COLLECTOR);
+  const logCollectorService = services.find(
+    svc => svc.Spec.Name === LOG_COLLECTOR
+  );
 
   res.render('services/new', {
     isFormDisabled: !!logCollectorService,
   });
-})
+});
 
 app.post('/services', async (req, res) => {
   const { body } = req;
   try {
     const sumoAccessId = await docker.createSecret({
       Name: SUMO_ACCESS_ID,
-      Data: Buffer.from(body.sumoAccessId).toString('base64')
+      Data: Buffer.from(body.sumoAccessId).toString('base64'),
     });
 
     const sumoAccessKey = await docker.createSecret({
@@ -154,14 +160,14 @@ app.post('/services', async (req, res) => {
       },
     });
 
-    res.redirect('/')
+    res.redirect('/');
   } catch (err) {
-    console.error(err)
+    console.error(err);
   }
-})
+});
 
 app.delete('/services/:name', async (req, res) => {
-  const serviceName = req.params.name
+  const serviceName = req.params.name;
 
   const logCollectorService = await docker.getService(serviceName);
   await logCollectorService.remove();
